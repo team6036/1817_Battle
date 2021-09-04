@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants;
 import frc.robot.Controls;
 import frc.robot.Motor;
+import frc.robot.Util;
 import frc.robot.wrappers.AHRS;
 import frc.robot.wrappers.CANCoder;
 import frc.robot.wrappers.ControlMode;
@@ -34,18 +35,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   static double cc(double cangle, double pangle) {
-    return normalize(cangle - pangle) + pangle;
-  }
-
-
-static double normalize(double angle){
-    angle %= 360.0; // [0..360) if angle is positive, (-360..0] if negative
-    if (angle > 180.0) // was positive
-        return angle - 360.0; // was (180..360) => returning (-180..0)
-    if (angle <= -180.0) // was negative
-        return angle + 360.0; // was (-360..180] => returning (0..180]
-    return angle; // (-180..180]
-} 
+    return Util.normalizeAngle(cangle - pangle) + pangle;
+  } 
 
 
 
@@ -55,6 +46,6 @@ static double normalize(double angle){
  */
 public static double driveEncoderToDist(double encoder){
     double driveGearRatio = 6.86;
-    return encoder / MotorType.FALCON.TICKS_PER_REV / driveGearRatio * 2 * Math.PI * Constants.WHEEL_RADIUS.getDouble();
+    return encoder / Motor.MotorType.FALCON.TICKS_PER_REV / driveGearRatio * 2 * Math.PI * Constants.WHEEL_RADIUS.getDouble();
 }
 }
