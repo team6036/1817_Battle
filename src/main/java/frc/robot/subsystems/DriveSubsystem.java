@@ -6,9 +6,12 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.awt.Color;
+
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import frc.robot.Constants;
 import frc.robot.Controls;
-import frc.robot.Motor.MotorType;
+import frc.robot.Motor;
 import frc.robot.wrappers.AHRS;
 import frc.robot.wrappers.CANCoder;
 import frc.robot.wrappers.ControlMode;
@@ -28,11 +31,6 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
   }
 
   static double cc(double cangle, double pangle) {
