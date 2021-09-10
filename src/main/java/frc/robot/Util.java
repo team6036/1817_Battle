@@ -1,6 +1,16 @@
 package frc.robot;
 
+import java.text.DecimalFormat;
+
 public class Util {
+
+    public static double toRadians(double degrees) {
+        return (Math.PI/180) * degrees;
+    }
+
+    public static double toDegrees(double radians) {
+        return (180/Math.PI) * radians;
+    }
 
     public static double normalizeAngle(double angle){
         angle %= 360.0; // [0..360) if angle is positive, (-360..0] if negative

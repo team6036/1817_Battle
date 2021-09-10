@@ -10,18 +10,13 @@ import java.awt.Color;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Constants;
-import frc.robot.Controls;
 import frc.robot.Motor;
 import frc.robot.Util;
-import frc.robot.wrappers.AHRS;
-import frc.robot.wrappers.CANCoder;
-import frc.robot.wrappers.ControlMode;
-import frc.robot.wrappers.Joystick;
-import frc.robot.wrappers.SPI;
-import frc.robot.wrappers.SensorInitializationStrategy;
-import frc.robot.wrappers.TalonFXFeedbackDevice;
-import frc.robot.wrappers.WPI_TalonFX;;
+import frc.robot.wrappers.Gyro;
+import frc.robot.wrappers.WPI_TalonFX;
 import frc.robot.Vector;
+
+import edu.wpi.first.wpilibj.SPI.Port;
 
 
 public class DriveSubsystem extends SubsystemBase {
@@ -34,7 +29,7 @@ public class DriveSubsystem extends SubsystemBase {
   static final double wheelRadius = 0.0508; //meters
 
   //WPILIB DECLARATIONS
-  static AHRS gyro;
+  static Gyro gyro;
   static WPI_TalonFX fl_turn, fl_drive, bl_turn, bl_drive, br_turn, br_drive, fr_turn, fr_drive;
   static CANCoder fl_encoder, bl_encoder, br_encoder, fr_encoder;
 
@@ -53,7 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public DriveSubsystem() {
     // This method will be called once per scheduler run
-    gyro = new AHRS(SPI.Port.kMXP);
+    gyro = new Gyro(Port.kMXP);
 
     //FRONT LEFT MODULE
     fl_turn = new WPI_TalonFX(1);
