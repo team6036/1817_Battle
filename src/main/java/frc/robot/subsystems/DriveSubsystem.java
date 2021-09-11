@@ -4,19 +4,24 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.awt.Color;
 
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
+import com.kauailabs.navx.frc.AHRS;
+
 import frc.robot.Constants;
 import frc.robot.Motor;
-import frc.robot.Util;
-import frc.robot.wrappers.Gyro;
-import frc.robot.wrappers.WPI_TalonFX;
-import frc.robot.Vector;
-
+import frc.robot.math.Util;
+import frc.robot.math.Vector;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class DriveSubsystem extends SubsystemBase {
@@ -29,8 +34,8 @@ public class DriveSubsystem extends SubsystemBase {
   static final double wheelRadius = 0.0508; //meters
 
   //WPILIB DECLARATIONS
-  static Gyro gyro;
-  static WPI_TalonFX fl_turn, fl_drive, bl_turn, bl_drive, br_turn, br_drive, fr_turn, fr_drive;
+  static AHRS gyro;
+  static TalonSRX fl_turn, fl_drive, bl_turn, bl_drive, br_turn, br_drive, fr_turn, fr_drive;
   static CANCoder fl_encoder, bl_encoder, br_encoder, fr_encoder;
 
   //JOYSTICK
@@ -48,48 +53,41 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public DriveSubsystem() {
     // This method will be called once per scheduler run
-    gyro = new Gyro(Port.kMXP);
+    gyro = new AHRS(Port.kMXP);
 
     //FRONT LEFT MODULE
-    fl_turn = new WPI_TalonFX(1);
-    fl_drive = new WPI_TalonFX(2);
+    fl_turn = new TalonSRX(1);
+    fl_drive = new TalonSRX(2);
     fl_encoder = new CANCoder(9);
 
     //BACK LEFT MODULE
-    bl_turn = new WPI_TalonFX(3);
-    bl_drive = new WPI_TalonFX(4);
+    bl_turn = new TalonSRX(3);
+    bl_drive = new TalonSRX(4);
     bl_encoder = new CANCoder(10);
 
     //BACK RIGHT MODULE
-    br_turn = new WPI_TalonFX(5);
-    br_drive = new WPI_TalonFX(6);
+    br_turn = new TalonSRX(5);
+    br_drive = new TalonSRX(6);
     br_encoder = new CANCoder(11);
 
     //FRONT RIGHT MODULE
-    fr_turn = new WPI_TalonFX(7);
-    fr_drive = new WPI_TalonFX(8);
+    fr_turn = new TalonSRX(7);
+    fr_drive = new TalonSRX(8);
     fr_encoder = new CANCoder(12);
 
     //CONFIGURING ENCODERS FOR EACH MODULE
     fl_encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     fl_turn.configRemoteFeedbackFilter(fl_encoder, 0);
-    fl_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-    fl_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    fl_turn.configAllSettings(new TalonSRXConfiguration());
 
     bl_encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     bl_turn.configRemoteFeedbackFilter(bl_encoder, 0);
-    bl_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-    bl_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
     br_encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     br_turn.configRemoteFeedbackFilter(br_encoder, 0);
-    br_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-    br_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
     fr_encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     fr_turn.configRemoteFeedbackFilter(fr_encoder, 0);
-    fr_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-    fr_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
     //EXAMPLE PID FOR FRONT LEFT MODULE ANGLE
     fl_turn.config_kP(0, 0.1);
@@ -138,7 +136,7 @@ public class DriveSubsystem extends SubsystemBase {
     double z = -joystick.getZ();
 
     // lock rotation
-    if (Controls.buttons.get(1))
+    if (joystick.getRawButtonPressed(1))
         z = 0;
 
     // double angle = Math.toDegrees(Math.atan2(-y, x));
@@ -148,7 +146,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     double power = Math.sqrt(x*x + y*y);
     // precision mode - decrease power by 0.5x
-    if (Controls.buttons.get(0)) {
+    if (joystick.getRawButtonPressed(1)) {
         power /= 2.0;
         z /= 2.0;
     }
