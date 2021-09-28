@@ -5,18 +5,22 @@
 package frc.robot.subsystems;
 
 
+
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.kauailabs.navx.frc.AHRS;
 
 import frc.robot.Constants;
 import frc.robot.Motor;
+import frc.robot.Constants.SwerveConstants;
+import frc.robot.math.Pose2D;
 import frc.robot.math.Util;
 import frc.robot.math.Vector;
 import edu.wpi.first.wpilibj.Joystick;
@@ -35,8 +39,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   //WPILIB DECLARATIONS
   static AHRS gyro;
-  static TalonSRX fl_turn, fl_drive, bl_turn, bl_drive, br_turn, br_drive, fr_turn, fr_drive;
+  static TalonFX fl_turn, fl_drive, bl_turn, bl_drive, br_turn, br_drive, fr_turn, fr_drive;
   static CANCoder fl_encoder, bl_encoder, br_encoder, fr_encoder;
+  static Pose2D fl_placement, fr_placement, bl_placement, br_placement;
 
   //JOYSTICK
   /**
@@ -56,76 +61,104 @@ public class DriveSubsystem extends SubsystemBase {
     gyro = new AHRS(Port.kMXP);
 
     //FRONT LEFT MODULE
-    fl_turn = new TalonSRX(1);
-    fl_drive = new TalonSRX(2);
-    fl_encoder = new CANCoder(9);
+    fl_turn = new TalonFX(5);
+    fl_drive = new TalonFX(6);
+    fl_encoder = new CANCoder(11);
 
     //BACK LEFT MODULE
-    bl_turn = new TalonSRX(3);
-    bl_drive = new TalonSRX(4);
-    bl_encoder = new CANCoder(10);
+    bl_turn = new TalonFX(7);
+    bl_drive = new TalonFX(8);
+    bl_encoder = new CANCoder(12);
 
     //BACK RIGHT MODULE
-    br_turn = new TalonSRX(5);
-    br_drive = new TalonSRX(6);
-    br_encoder = new CANCoder(11);
+    br_turn = new TalonFX(1);
+    br_drive = new TalonFX(2);
+    br_encoder = new CANCoder(9);
 
     //FRONT RIGHT MODULE
-    fr_turn = new TalonSRX(7);
-    fr_drive = new TalonSRX(8);
-    fr_encoder = new CANCoder(12);
+    fr_turn = new TalonFX(3);
+    fr_drive = new TalonFX(4);
+    fr_encoder = new CANCoder(10);
+
+    double offsetX = SwerveConstants.offsetX;
+    double offsetY = SwerveConstants.offsetY;
+    br_placement = new Pose2D(+offsetX, +offsetY, Util.normalizeAngle(SwerveConstants.BR.offset, Math.PI));
+    fr_placement = new Pose2D(-offsetX, +offsetY, Util.normalizeAngle(SwerveConstants.FR.offset, Math.PI));
+    fl_placement = new Pose2D(-offsetX, -offsetY, Util.normalizeAngle(SwerveConstants.FL.offset, Math.PI));
+    bl_placement = new Pose2D(+offsetX, -offsetY, Util.normalizeAngle(SwerveConstants.BL.offset, Math.PI));
 
     //CONFIGURING ENCODERS FOR EACH MODULE
     fl_encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     fl_turn.configRemoteFeedbackFilter(fl_encoder, 0);
-    fl_turn.configAllSettings(new TalonSRXConfiguration());
+    fl_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+    fl_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
     bl_encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     bl_turn.configRemoteFeedbackFilter(bl_encoder, 0);
+    bl_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+    bl_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
     br_encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     br_turn.configRemoteFeedbackFilter(br_encoder, 0);
+    br_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+    br_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
     fr_encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     fr_turn.configRemoteFeedbackFilter(fr_encoder, 0);
+    fr_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+    fr_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
-    //EXAMPLE PID FOR FRONT LEFT MODULE ANGLE
-    fl_turn.config_kP(0, 0.1);
-    fl_turn.config_kI(0, 0.01);
-    fl_turn.config_kD(0, 0.001);
 
-    fr_turn.config_kP(0, 0.1);
-    fr_turn.config_kI(0, 0.01);
-    fr_turn.config_kD(0, 0.001);
+    // TURN PID from manassas
+    fl_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+    fl_turn.config_kF(0, 0.002, 0);
+    fl_turn.config_kP(0, 0.50, 0);
+    fl_turn.config_kI(0, 0.0005, 0);
+    fl_turn.config_kD(0, 0, 0);
 
-    bl_turn.config_kP(0, 0.1);
-    bl_turn.config_kI(0, 0.01);
-    bl_turn.config_kD(0, 0.001);
+    fr_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+    fr_turn.config_kF(0, 0.002, 0);
+    fr_turn.config_kP(0, 0.50, 0);
+    fr_turn.config_kI(0, 0.0005, 0);
+    fr_turn.config_kD(0, 0, 0);
 
-    br_turn.config_kP(0, 0.1);
-    br_turn.config_kI(0, 0.01);
-    br_turn.config_kD(0, 0.001);
+    bl_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+    bl_turn.config_kF(0, 0.002, 0);
+    bl_turn.config_kP(0, 0.50, 0);
+    bl_turn.config_kI(0, 0.0005, 0);
+    bl_turn.config_kD(0, 0, 0);
 
-    //EXAMPLE PID FOR BACK RIGHT WHEEL VELOCITY
-    fl_drive.config_kP(0, 0.00002);
-    fl_drive.config_kI(0, 0.00005);
-    fl_drive.config_kD(0, 0.0);
-    fl_drive.config_kF(0, 0.00005);
+    br_turn.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+    br_turn.config_kF(0, 0.002, 0);
+    br_turn.config_kP(0, 0.50, 0);
+    br_turn.config_kI(0, 0.0005, 0);
+    br_turn.config_kD(0, 0, 0);
 
-    fr_drive.config_kP(0, 0.00002);
-    fr_drive.config_kI(0, 0.00005);
-    fr_drive.config_kD(0, 0.0);
-    fr_drive.config_kF(0, 0.00005);
 
-    bl_drive.config_kP(0, 0.00002);
-    bl_drive.config_kI(0, 0.00005);
-    bl_drive.config_kD(0, 0.0);
-    bl_drive.config_kF(0, 0.00005);
+    // DRIVE PID from manassas
+    fl_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    fl_drive.config_kF(0, 1023.0 / 20660.0, 0);
+    fl_drive.config_kP(0, 0.1, 0);
+    fl_drive.config_kI(0, 0, 0);
+    fl_drive.config_kD(0, 0, 0);
 
-    br_drive.config_kP(0, 0.00002);
-    br_drive.config_kI(0, 0.00005);
-    br_drive.config_kD(0, 0.0);
-    br_drive.config_kF(0, 0.00005);
+    fr_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    fr_drive.config_kF(0, 1023.0 / 20660.0, 0);
+    fr_drive.config_kP(0, 0.1, 0);
+    fr_drive.config_kI(0, 0, 0);
+    fr_drive.config_kD(0, 0, 0);
+
+    bl_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    bl_drive.config_kF(0, 1023.0 / 20660.0, 0);
+    bl_drive.config_kP(0, 0.1, 0);
+    bl_drive.config_kI(0, 0, 0);
+    bl_drive.config_kD(0, 0, 0);
+
+    br_drive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    br_drive.config_kF(0, 1023.0 / 20660.0, 0);
+    br_drive.config_kP(0, 0.1, 0);
+    br_drive.config_kI(0, 0, 0);
+    br_drive.config_kD(0, 0, 0);
   }
 
   @Override
@@ -136,41 +169,44 @@ public class DriveSubsystem extends SubsystemBase {
     double z = -joystick.getZ();
 
     // lock rotation
-    if (joystick.getRawButtonPressed(1))
-        z = 0;
+    // if (joystick.getRawButtonPressed(1))
+    //     z = 0;
 
     // double angle = Math.toDegrees(Math.atan2(-y, x));
+    double offsetX = Constants.SwerveConstants.offsetX;
+    double offsetY = Constants.SwerveConstants.offsetY;
+
     double fdir = Math.toDegrees(-gyro.getYaw());
+    double offsetAngle = Math.toDegrees(Util.normalizeAngle(Math.atan2(offsetY, offsetX)));
     double angle = Math.toDegrees(Math.atan2(-y*Math.sqrt(1-0.5*x*x), x*Math.sqrt(1-0.5*y*y))) + fdir;
 
 
     double power = Math.sqrt(x*x + y*y);
-    // precision mode - decrease power by 0.5x
-    if (joystick.getRawButtonPressed(1)) {
-        power /= 2.0;
-        z /= 2.0;
-    }
-
+    // // precision mode - decrease power by 0.5x
+    // if (joystick.getRawButtonPressed(1)) {
+    //     power /= 2.0;
+    //     z /= 2.0;
+    // }
     
     Vector flt = Vector.angleMagTranslation(angle, power);
     Vector frt = Vector.angleMagTranslation(angle, power);
     Vector blt = Vector.angleMagTranslation(angle, power);
     Vector brt = Vector.angleMagTranslation(angle, power);
-    
-    Vector flr = Vector.angleMagTranslation(132.510447078, z*distBetweenWheelsDiag);
-    Vector frr = Vector.angleMagTranslation(407.489552922, z*distBetweenWheelsDiag);
-    Vector blr = Vector.angleMagTranslation(227.489552922, z*distBetweenWheelsDiag);
-    Vector brr = Vector.angleMagTranslation(312.510447078, z*distBetweenWheelsDiag);
+
+    Vector flr = Vector.angleMagTranslation(132.510447078, z);
+    Vector frr = Vector.angleMagTranslation(407.489552922, z);
+    Vector blr = Vector.angleMagTranslation(227.489552922, z);
+    Vector brr = Vector.angleMagTranslation(312.510447078, z);
 
     Vector fl = flt.add(flr);
     Vector fr = frt.add(frr);
     Vector bl = blt.add(blr);
     Vector br = brt.add(brr);
 
-    fl_turn.set(ControlMode.Position, cc(fl.getAngleDeg(), fl_turn.getSelectedSensorPosition()));
-    fr_turn.set(ControlMode.Position, cc(fr.getAngleDeg(), fr_turn.getSelectedSensorPosition()));
-    bl_turn.set(ControlMode.Position, cc(bl.getAngleDeg(), bl_turn.getSelectedSensorPosition()));
-    br_turn.set(ControlMode.Position, cc(br.getAngleDeg(), br_turn.getSelectedSensorPosition()));
+    fl_turn.set(ControlMode.Position, cc(fl.getAngleDeg() + Constants.SwerveConstants.FL.offset, getAngle(fl_turn, fl_placement)));
+    fr_turn.set(ControlMode.Position, cc(fr.getAngleDeg() + Constants.SwerveConstants.FR.offset, getAngle(fr_turn, fr_placement)));
+    bl_turn.set(ControlMode.Position, cc(bl.getAngleDeg() + Constants.SwerveConstants.BL.offset, getAngle(bl_turn, bl_placement)));
+    br_turn.set(ControlMode.Position, cc(br.getAngleDeg() + Constants.SwerveConstants.BR.offset, getAngle(br_turn, br_placement)));
 
     fl_drive.set(ControlMode.PercentOutput, fl.magnitude());
     fr_drive.set(ControlMode.PercentOutput, fr.magnitude());
@@ -180,7 +216,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   static double cc(double cangle, double pangle) {
     return Util.normalizeAngle(cangle - pangle) + pangle;
-  } 
+  }
+
+  private static double getAngle(TalonFX motor, Pose2D placement) {
+    double encoderPos = motor.getSelectedSensorPosition();
+    return encoderPos / 4096 * (2 * Math.PI) + placement.ang;
+}
 
 
 

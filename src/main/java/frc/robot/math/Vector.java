@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.math;
 
 public class Vector {
     double x;

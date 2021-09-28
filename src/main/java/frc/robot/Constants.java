@@ -1,5 +1,7 @@
 package frc.robot;
 
+import frc.robot.math.Util;
+
 public class Constants {
 
     /** ////////////////////////////////////////////
@@ -119,6 +121,47 @@ public class Constants {
             this.value = value_input;
         }
 
+    }
+
+
+
+
+
+
+
+    public static class SwerveConstants {
+        public static final double DRIVE_RATIO = 6.86;
+        public static final double WHEEL_RADIUS = Util.inchesToMeters(2);
+        public static final double offsetX = Util.inchesToMeters(26 / 2);
+        public static final double offsetY = Util.inchesToMeters(24 / 2);
+
+        public static class FR {
+            public static final int D = 4;
+            public static final int T = 3;
+            public static final int E = 10;
+            public static final double offset = 2.727418 + Math.PI;
+        }
+
+        public static final class FL {
+            public static final int D = 6;
+            public static final int T = 5;
+            public static final int E = 11;
+            public static final double offset = 2.508059 + Math.PI;
+        }
+
+        public static final class BR {
+            public static final int D = 2;
+            public static final int T = 1;
+            public static final int E = 9;
+            public static final double offset = 0.632000 - 0.47123889 + 2.819764;
+        }
+
+        public static final class BL {
+            public static final int D = 8;
+            public static final int T = 7;
+            public final static int E = 12;
+            public final static double offset = 0.878971 + Math.PI;
+        }
     }
 
 }

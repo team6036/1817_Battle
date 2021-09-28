@@ -53,7 +53,7 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    implementation project(':Common')
+    // implementation project(':Common')
 
     testImplementation 'junit:junit:4.12'
 

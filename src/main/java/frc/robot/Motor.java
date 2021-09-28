@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.math.TrapIntegrator;
+import frc.robot.math.Util;
 
 public class Motor {
 
