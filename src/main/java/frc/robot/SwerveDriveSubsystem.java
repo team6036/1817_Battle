@@ -28,10 +28,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public SwerveDriveSubsystem(double width, double length) {
 
-        this.swerveEnclosureFL = new CanTalonSwerveEnclosure("FL", new TalonFX(6), new TalonFX(5), 1.0);
-        this.swerveEnclosureFR = new CanTalonSwerveEnclosure("FR", new TalonFX(4), new TalonFX(3), 1.0);
-        this.swerveEnclosureBL = new CanTalonSwerveEnclosure("BL", new TalonFX(8), new TalonFX(7), 1.0);
-        this.swerveEnclosureBR = new CanTalonSwerveEnclosure("BR", new TalonFX(2), new TalonFX(1), 1.0);
+        this.swerveEnclosureFL = new CanTalonSwerveEnclosure("FL", new TalonFX(6), new TalonFX(5), 4096);
+        this.swerveEnclosureFR = new CanTalonSwerveEnclosure("FR", new TalonFX(4), new TalonFX(3), 4096);
+        this.swerveEnclosureBL = new CanTalonSwerveEnclosure("BL", new TalonFX(8), new TalonFX(7), 4096);
+        this.swerveEnclosureBR = new CanTalonSwerveEnclosure("BR", new TalonFX(2), new TalonFX(1), 4096);
 
         // instantiate the swerve library with a gyro provider using pigeon1
         swerveMath = new SwerveMath(width, length);
