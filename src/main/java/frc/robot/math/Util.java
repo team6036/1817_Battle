@@ -12,6 +12,14 @@ public class Util {
         return (180/Math.PI) * radians;
     }
 
+    public static double toEncoderTicks(double angle) {
+        return angle * (4096/360);
+    }
+
+    public static double ecToDegrees(double encoderTicks) {
+        return encoderTicks / 4096 * 360;
+    }
+
     public static double normalizeAngle(double angle){
         angle %= 360.0; // [0..360) if angle is positive, (-360..0] if negative
         if (angle > 180.0) // was positive
