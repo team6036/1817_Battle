@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private Command m_indexerCommand;
+  private LimeLight lm = new LimeLight();
 
   private RobotContainer m_robotContainer;
 
@@ -87,11 +88,15 @@ public class Robot extends TimedRobot {
     if (m_indexerCommand != null) {
       m_indexerCommand.cancel();
     }
+    lm.setPipeline(1);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    System.out.println(lm.getdegRotationToTarget());
+  }
 
   @Override
   public void testInit() {

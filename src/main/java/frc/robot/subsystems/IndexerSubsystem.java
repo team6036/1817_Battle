@@ -19,8 +19,6 @@ public class IndexerSubsystem extends SubsystemBase {
   static CANSparkMax revolver2;
   static TalonFX balltube;
 
-  static final int motorPort = 3;
-
   static Joystick joystick = new Joystick(0);
 
 
