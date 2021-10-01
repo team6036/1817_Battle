@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.Debug;
@@ -17,6 +18,7 @@ import frc.robot.subsystems.SwerveController.Module;
 
 public class SwerveDriveSubsystem extends SubsystemBase {
     private final SwerveController swerve;
+    private Joystick joystick;
     private boolean fieldRelative;
     private Pose2D robotSpeed;
 
@@ -24,6 +26,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * Creates a new ExampleSubsystem.
      */
     public SwerveDriveSubsystem() {
+        joystick = new Joystick(0);
         robotSpeed = new Pose2D();
         double offsetX = SwerveConstants.offsetX;
         double offsetY = SwerveConstants.offsetY;
@@ -41,6 +44,13 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        double x = joystick.getX();
+        double y = joystick.getY();
+        double z = joystick.getRawAxis(3);
+
+        double speed = Math.sqrt(x*x + y*y);
+        
+
         swerve.nyoom(robotSpeed, fieldRelative);
         // TODO: make chassis angle PID controlled to prevent drift
         // TODO: Work with chis to add a estimated chassis angle in order to actually be

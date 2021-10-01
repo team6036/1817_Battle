@@ -5,12 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.OTBCommand;
-import frc.robot.commands.TeleCommand;
+import frc.robot.commands.SwerveCommand;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.OTBSubsystem;
+import frc.robot.subsystems.SwerveDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -21,18 +23,23 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveDriveSubsystem m_swerveDriveSubsystem = new SwerveDriveSubsystem(0.6096, 0.5588);
+  private final SwerveDriveSubsystem m_swerveDriveSubsystem = new SwerveDriveSubsystem();
   private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem();
   private final OTBSubsystem m_otbSubsystem = new OTBSubsystem();
 
-  private final TeleCommand m_teleCommand = new TeleCommand(m_swerveDriveSubsystem);
-  private final ExampleCommand m_indexerCommand = new ExampleCommand(m_indexerSubsystem);
+  private final SwerveCommand m_swerveCommand;
+  private final IndexerCommand m_indexerCommand = new IndexerCommand(m_indexerSubsystem);
   private final OTBCommand m_otbCommand = new OTBCommand(m_otbSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    Joystick j = new Joystick(0);
+    m_swerveCommand = new SwerveCommand(m_swerveDriveSubsystem, () -> j.getX(), () -> j.getY(), () -> j.getZ(),
+    () -> j.getRawButton(7));
+    // m_swerveCommand = new SwerveCommand(m_swerveDriveSubsystem, () -> 0.1, () -> 0.1, () -> 0.1,
+    // () -> j.getRawButton(7));
   }
 
   /**
@@ -43,21 +50,15 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {}
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return m_teleCommand;
-  }
-
   public Command getIndexerCommand(){
     return m_indexerCommand;
   }
 
   public Command getIntakeCommand() {
     return m_otbCommand;
+  }
+
+  public Command[] getTeleopCommands() {
+    return new Command[] {m_swerveCommand};
   }
 }
