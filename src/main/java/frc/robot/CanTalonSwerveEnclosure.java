@@ -22,12 +22,12 @@ public class CanTalonSwerveEnclosure extends BaseEnclosure implements SwerveEncl
         super(name, gearRatio);
 
         this.driveMotor = driveMotor;
-        this.steerMotor = steerMotor;
+		this.steerMotor = steerMotor;
     }
 
     @Override
     public void stop() {
-        
+		driveMotor.set(ControlMode.PercentOutput, 0);
     }
 
     @Override

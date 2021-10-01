@@ -7,8 +7,10 @@ import frc.robot.math.SwerveMath;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class SwerveDriveSubsystem extends SubsystemBase {
     private Joystick joystick = new Joystick(0);
+    private static AHRS gyro;
 
     // Enclosures 1-4 are the drive/steer combos
     private CanTalonSwerveEnclosure swerveEnclosureFL;
@@ -28,23 +31,35 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public SwerveDriveSubsystem(double width, double length) {
 
-        this.swerveEnclosureFL = new CanTalonSwerveEnclosure("FL", new TalonFX(6), new TalonFX(5), 4096);
-        this.swerveEnclosureFR = new CanTalonSwerveEnclosure("FR", new TalonFX(4), new TalonFX(3), 4096);
-        this.swerveEnclosureBL = new CanTalonSwerveEnclosure("BL", new TalonFX(8), new TalonFX(7), 4096);
-        this.swerveEnclosureBR = new CanTalonSwerveEnclosure("BR", new TalonFX(2), new TalonFX(1), 4096);
+        int gearRatio = 2048;
+
+        swerveEnclosureFL = new CanTalonSwerveEnclosure("FL", new TalonFX(6), new TalonFX(5), gearRatio);
+        swerveEnclosureFR = new CanTalonSwerveEnclosure("FR", new TalonFX(4), new TalonFX(3), gearRatio);
+        swerveEnclosureBL = new CanTalonSwerveEnclosure("BL", new TalonFX(8), new TalonFX(7), gearRatio);
+        swerveEnclosureBR = new CanTalonSwerveEnclosure("BR", new TalonFX(2), new TalonFX(1), gearRatio);
 
         // instantiate the swerve library with a gyro provider using pigeon1
         swerveMath = new SwerveMath(width, length);
+        // swerveEnclosureFL.setEncPosition(0);
+        // swerveEnclosureFR.setEncPosition(0);
+        // swerveEnclosureBL.setEncPosition(0);
+        // swerveEnclosureBR.setEncPosition(0);
+
+        gyro = new AHRS(Port.kMXP);
 
     }
 
     @Override
     public void periodic() {
+        this.setCentricMode(CentricMode.FIELD);
+
         double x = joystick.getX();
         double y = joystick.getY();
-        double z = joystick.getZ();
+        double z = joystick.getRawAxis(3);
 
-        move(y, x, z, 0.0);
+        // double yaw = (double)(-gyro.getYaw());
+        double yaw = 0;
+        move(y, x, z, yaw);
     }
 
     /**
