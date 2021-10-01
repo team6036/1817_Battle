@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private Command m_indexerCommand;
+  private Command m_otbCommand;
 
   private RobotContainer m_robotContainer;
 
@@ -59,6 +60,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_indexerCommand = m_robotContainer.getIndexerCommand();
+    m_otbCommand = m_robotContainer.getIntakeCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -66,6 +68,9 @@ public class Robot extends TimedRobot {
     }
     if (m_indexerCommand != null) {
       m_indexerCommand.schedule();
+    }
+    if (m_otbCommand != null) {
+      m_otbCommand.schedule();
     }
   }
 

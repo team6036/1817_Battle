@@ -7,8 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.OTBCommand;
 import frc.robot.commands.TeleCommand;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.OTBSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -21,9 +23,11 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDriveSubsystem m_swerveDriveSubsystem = new SwerveDriveSubsystem(0.6096, 0.5588);
   private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem();
+  private final OTBSubsystem m_otbSubsystem = new OTBSubsystem();
 
   private final TeleCommand m_teleCommand = new TeleCommand(m_swerveDriveSubsystem);
   private final ExampleCommand m_indexerCommand = new ExampleCommand(m_indexerSubsystem);
+  private final OTBCommand m_otbCommand = new OTBCommand(m_otbSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -51,5 +55,9 @@ public class RobotContainer {
 
   public Command getIndexerCommand(){
     return m_indexerCommand;
+  }
+
+  public Command getIntakeCommand() {
+    return m_otbCommand;
   }
 }

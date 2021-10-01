@@ -16,7 +16,7 @@ public class OTBSubsystem extends SubsystemBase {
   static int stuckCurrent = 1; //placeholder
 
   public OTBSubsystem() {
-    in = new CANSparkMax(22 /*I think*/, CANSparkMaxLowLevel.MotorType.kBrushless);
+    in = new CANSparkMax(14 /*I think*/, CANSparkMaxLowLevel.MotorType.kBrushless);
   }
 
   @Override
