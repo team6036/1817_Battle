@@ -32,7 +32,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public SwerveDriveSubsystem(double width, double length) {
 
-        int gearRatio = 7;
+        int gearRatio = 4096;
 
         swerveEnclosureFL = new CanTalonSwerveEnclosure("FL", new TalonFX(6), new TalonFX(5), new CANCoder(9), gearRatio);
         swerveEnclosureFR = new CanTalonSwerveEnclosure("FR", new TalonFX(4), new TalonFX(3), new CANCoder(12), gearRatio);
@@ -52,15 +52,14 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        this.setCentricMode(CentricMode.FIELD);
+        // this.setCentricMode(CentricMode.FIELD);
 
         double x = joystick.getX();
         double y = joystick.getY();
         double z = joystick.getZ();
 
-        // double yaw = (double)(-gyro.getYaw());
-        double yaw = 0;
-        move(y, x, 0, yaw);
+        double yaw = (double)(-gyro.getYaw());
+        move(y, x, 0, 0.0);
     }
 
     /**

@@ -29,17 +29,17 @@ public class CanTalonSwerveEnclosure extends BaseEnclosure implements SwerveEncl
 		this.steerMotor = steerMotor;
 		this.encoder = encoder;
 
-        this.driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-		this.driveMotor.config_kP(0, 0.00002);
-        this.driveMotor.config_kI(0, 0.00005);
-        this.driveMotor.config_kD(0, 0.0);
-        this.driveMotor.config_kF(0, 0.00005);
+        // this.driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+		// this.driveMotor.config_kP(0, 0.00002);
+        // this.driveMotor.config_kI(0, 0.00005);
+        // this.driveMotor.config_kD(0, 0.0);
+        // this.driveMotor.config_kF(0, 0.00005);
 		
-		this.steerMotor.configRemoteFeedbackFilter(encoder, 0);
-		this.steerMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-		this.steerMotor.config_kP(0, 0.1);
-        this.steerMotor.config_kI(0, 0.01);
-        this.steerMotor.config_kD(0, 0.001);
+		// // this.steerMotor.configRemoteFeedbackFilter(encoder, 0);
+		// this.steerMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+		// this.steerMotor.config_kP(0, 0.1);
+        // this.steerMotor.config_kI(0, 0.01);
+        // this.steerMotor.config_kD(0, 0.001);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class CanTalonSwerveEnclosure extends BaseEnclosure implements SwerveEncl
     @Override
     public int getEncPosition() {
 		int reverse = reverseEncoder ? -1 : 1;
-		return reverse * (int)steerMotor.getSelectedSensorPosition();
+		return reverse * (int)steerMotor.getSelectedSensorPosition(0);
     }	
 
     @Override

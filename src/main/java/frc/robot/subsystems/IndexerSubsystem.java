@@ -33,14 +33,14 @@ public class IndexerSubsystem extends SubsystemBase {
 
 
   public void start(){
-    // shooterRight.set(-1);
+    shooterRight.set(-1);
     shooterLeft.set(1);
     revolver2.set(-0.05);
     balltube.set(ControlMode.PercentOutput, 0.8);
   }
 
   public void stop(){
-    // shooterRight.set(0);
+    shooterRight.set(0);
     shooterLeft.set(0);
     revolver2.set(0);
     balltube.set(ControlMode.PercentOutput, 0);
