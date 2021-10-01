@@ -16,33 +16,33 @@ public class IndexerSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   static CANSparkMax shooterRight;
   static CANSparkMax shooterLeft;
-  static CANSparkMax revolver2;
+  static CANSparkMax indexer;
   static TalonFX balltube;
 
   static final int motorPort = 3;
 
-  static Joystick joystick = new Joystick(0);
+  static Joystick joystick = new Joystick(1);
 
 
   public IndexerSubsystem() {
     shooterRight = new CANSparkMax(6, MotorType.kBrushless);
     shooterLeft = new CANSparkMax(18, MotorType.kBrushless);
-    revolver2 = new CANSparkMax(21, MotorType.kBrushless);
     balltube = new TalonFX(21);
+    indexer = new CANSparkMax(21, MotorType.kBrushless);
   }
 
 
   public void start(){
-    shooterRight.set(-1);
-    shooterLeft.set(1);
-    revolver2.set(-0.05);
-    balltube.set(ControlMode.PercentOutput, 0.8);
+    shooterRight.set(-Math.abs(joystick.getRawAxis(3)));
+    shooterLeft.set(Math.abs(joystick.getRawAxis(3)));
+    indexer.set(-0.3);
+    balltube.set(ControlMode.PercentOutput, 0.7);
   }
 
   public void stop(){
     shooterRight.set(0);
     shooterLeft.set(0);
-    revolver2.set(0);
+    indexer.set(0);
     balltube.set(ControlMode.PercentOutput, 0);
   }
 
