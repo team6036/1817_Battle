@@ -10,6 +10,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
@@ -18,10 +20,14 @@ public class IndexerSubsystem extends SubsystemBase {
   static CANSparkMax shooterLeft;
   static CANSparkMax indexer;
   static TalonFX balltube;
+  static Servo pushUp;
+  static Spark hood1;
+
+  static boolean up = false;
 
   static final int motorPort = 3;
 
-  static Joystick joystick = new Joystick(1);
+  static Joystick joystick = new Joystick(0);
 
 
   public IndexerSubsystem() {
@@ -29,6 +35,8 @@ public class IndexerSubsystem extends SubsystemBase {
     shooterLeft = new CANSparkMax(18, MotorType.kBrushless);
     balltube = new TalonFX(21);
     indexer = new CANSparkMax(21, MotorType.kBrushless);
+    pushUp = new Servo(2);
+    hood1 = new Spark(0);
   }
 
 
@@ -37,6 +45,7 @@ public class IndexerSubsystem extends SubsystemBase {
     shooterLeft.set(Math.abs(joystick.getRawAxis(3)));
     indexer.set(-0.3);
     balltube.set(ControlMode.PercentOutput, 0.7);
+    // hood1.set(joystick.getZ());
   }
 
   public void stop(){
@@ -49,10 +58,19 @@ public class IndexerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if(joystick.getRawButton(6)){
+    if(joystick.getRawButton(11)){
       start();
     }else{
       stop();
+    }
+
+    // push up thing
+    if (joystick.getRawButton(12)) {
+      up = !up;
+      if (up)
+        pushUp.setAngle(90);
+      else
+        pushUp.setAngle(0);
     }
   }
 

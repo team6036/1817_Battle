@@ -26,12 +26,14 @@ public class OTBSubsystem extends SubsystemBase {
     }else{
       stopIn();
     }
+    System.out.println(in.getOutputCurrent());
+    System.out.println(in.getAppliedOutput());
     // This method will be called once per scheduler run
 
   }
 
   public static void startIn(){
-    in.set(0.5);
+    in.set(-1);
   }
 
   public static void stopIn(){
@@ -39,7 +41,7 @@ public class OTBSubsystem extends SubsystemBase {
   }
 
   public static void reverse(){
-    in.set(-0.5);
+    in.set(1);
   }
 
   public static boolean isStuck(){
