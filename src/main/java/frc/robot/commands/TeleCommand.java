@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import frc.robot.SwerveDriveSubsystem;
+import frc.robot.subsystems.SwerveDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */

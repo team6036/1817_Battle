@@ -4,6 +4,11 @@ import frc.robot.math.Util;
 
 public class Constants {
 
+    public static class Debug {
+        public static final boolean odometryDebug = true; // terminal
+        public static final boolean swerveDebug = false; // smartdashboard
+    }
+
     /** ////////////////////////////////////////////
      * REAL PHYSICAL CONSTANTS (meters, kilograms, seconds, Newtons, radians)
      * //////////////////////////////////////////// */ 
