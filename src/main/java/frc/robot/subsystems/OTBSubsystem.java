@@ -33,7 +33,7 @@ public class OTBSubsystem extends SubsystemBase {
   }
 
   public static void startIn(){
-    in.set(-1);
+    in.set(-0.35);
   }
 
   public static void stopIn(){
@@ -41,7 +41,7 @@ public class OTBSubsystem extends SubsystemBase {
   }
 
   public static void reverse(){
-    in.set(1);
+    in.set(0.5);
   }
 
   public static boolean isStuck(){

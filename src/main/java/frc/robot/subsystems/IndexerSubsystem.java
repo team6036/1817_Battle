@@ -26,8 +26,9 @@ public class IndexerSubsystem extends SubsystemBase {
   static boolean up = false;
 
   static final int motorPort = 3;
+  static final double scalef = 0.8;
 
-  static Joystick joystick = new Joystick(0);
+  static Joystick joystick = new Joystick(2);
 
 
   public IndexerSubsystem() {
@@ -41,11 +42,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
 
   public void start(){
-    shooterRight.set(-Math.abs(joystick.getRawAxis(3)));
-    shooterLeft.set(Math.abs(joystick.getRawAxis(3)));
-    indexer.set(-0.3);
+    shooterRight.set(-scalef*Math.abs(joystick.getRawAxis(3)));
+    shooterLeft.set(scalef*Math.abs(joystick.getRawAxis(3)));
+    indexer.set(-0.05);
     balltube.set(ControlMode.PercentOutput, 0.7);
-    // hood1.set(joystick.getZ());
   }
 
   public void stop(){
@@ -53,6 +53,7 @@ public class IndexerSubsystem extends SubsystemBase {
     shooterLeft.set(0);
     indexer.set(0);
     balltube.set(ControlMode.PercentOutput, 0);
+    hood1.set(0);
   }
 
   @Override
@@ -62,6 +63,9 @@ public class IndexerSubsystem extends SubsystemBase {
       start();
     }else{
       stop();
+      shooterRight.set(-0.2);
+      shooterLeft.set(0.2);
+      hood1.set(joystick.getRawAxis(3));
     }
 
     // push up thing
