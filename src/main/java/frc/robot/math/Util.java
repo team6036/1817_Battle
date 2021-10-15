@@ -3,6 +3,10 @@ package frc.robot.math;
 import java.text.DecimalFormat;
 
 public class Util {
+    
+    public static double sigmoid(double x) {
+        return 1/(1+Math.exp(-x));
+    }
 
     public static Pose2D squareToCircle(Pose2D pose) {
         return new Pose2D(pose.x * Math.sqrt(1 - pose.x * pose.x / 2), pose.y * Math.sqrt(1 - pose.y * pose.y / 2),

@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.ControlLime.LedMode;
+import frc.robot.commands.SwerveAutoCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -16,9 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command[] m_teleopCommands;
-  private Command m_autonomousCommand;
-  private Command m_indexerCommand;
-  private Command m_otbCommand;
+  private Command[] m_autonomousCommands;
 
   private RobotContainer m_robotContainer;
 
@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    
   }
 
   /**
@@ -59,26 +60,19 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_indexerCommand = m_robotContainer.getIndexerCommand();
-    m_otbCommand = m_robotContainer.getIntakeCommand();
+    m_autonomousCommands = m_robotContainer.getAutonomousCommands();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-    if (m_indexerCommand != null) {
-      m_indexerCommand.schedule();
-    }
-    if (m_otbCommand != null) {
-      m_otbCommand.schedule();
+    if (m_autonomousCommands != null) {
+      for (Command c : m_autonomousCommands)
+        c.schedule();
     }
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    System.out.println(m_indexerCommand.isScheduled());
+    System.out.println(((SwerveAutoCommand)(m_autonomousCommands[0])).getLimeLight().getdegRotationToTarget());
   }
 
   @Override
@@ -88,11 +82,13 @@ public class Robot extends TimedRobot {
       for (Command c : m_teleopCommands) {
           c.schedule(); 
       }
+
+      // ((SwerveAutoCommand)(m_autonomousCommands[0])).getLimeLight().setLEDMode(LedMode.kforceOn);
+
   }
 
   @Override
   public void teleopPeriodic() {
-
   }
 
   @Override

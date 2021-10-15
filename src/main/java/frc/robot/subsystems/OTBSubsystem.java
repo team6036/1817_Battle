@@ -26,8 +26,10 @@ public class OTBSubsystem extends SubsystemBase {
     }else{
       stopIn();
     }
-    System.out.println(in.getOutputCurrent());
-    System.out.println(in.getAppliedOutput());
+    if(joystick.getRawButton(6)){
+      reverse();
+    }
+
     // This method will be called once per scheduler run
 
   }
@@ -41,7 +43,7 @@ public class OTBSubsystem extends SubsystemBase {
   }
 
   public static void reverse(){
-    in.set(0.5);
+    in.set(0.4);
   }
 
   public static boolean isStuck(){
