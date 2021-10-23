@@ -6,8 +6,6 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
@@ -52,14 +50,11 @@ public class SwerveCommand extends CommandBase {
         }
         Pose2D driveTranslation = Util
                 .squareToCircle(new Pose2D(-stickY.getAsDouble(), -stickX.getAsDouble(), driveRotation))
-                .scalarMult(3.5);
+                .scalarMult(2);
         if (driveTranslation.getMagnitude() < 0.15) {
             driveTranslation = new Pose2D(0, 0, driveRotation);
         }
         m_subsystem.drive(driveTranslation, true);
-
-        SmartDashboard.putNumber("dx",  m_subsystem.getController().odo.robotPose.x);
-        SmartDashboard.putNumber("dy",  m_subsystem.getController().odo.robotPose.y);
 
     }
 

@@ -1,10 +1,9 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.Debug;
 import frc.robot.Constants.SwerveConstants;
@@ -21,16 +20,17 @@ import frc.robot.subsystems.SwerveController.Module;
 public class SwerveDriveSubsystem extends SubsystemBase {
     private final SwerveController swerve;
     private Joystick joystick;
+    private XboxController xbox;
     private boolean fieldRelative;
     private Pose2D robotSpeed;
-    // private XboxController xb;
 
     /**
      * Creates a new ExampleSubsystem.
      */
     public SwerveDriveSubsystem() {
         joystick = new Joystick(0);
-        // xb = new XboxController(2);
+        xbox = new XboxController(0);
+
         robotSpeed = new Pose2D();
         double offsetX = SwerveConstants.offsetX;
         double offsetY = SwerveConstants.offsetY;
@@ -49,11 +49,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         double x = joystick.getX();
-        // double x = xb.getX(Hand.kLeft);
         double y = joystick.getY();
-        // double y = xb.getY(Hand.kLeft);
         double z = joystick.getRawAxis(3);
-        // double z = xb.getX(Hand.kRight);
 
         double speed = Math.sqrt(x*x + y*y);
         

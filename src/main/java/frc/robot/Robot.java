@@ -73,7 +73,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    System.out.println(((SwerveAutoCommand)(m_autonomousCommands[0])).getLimeLight().getdegRotationToTarget());
+//    System.out.println(((SwerveAutoCommand)(m_autonomousCommands[0])).getLimeLight().getdegRotationToTarget());
+//    System.out.println(((SwerveAutoCommand)(m_autonomousCommands[0])).getLimeLight().getdegRotationToTarget());
   }
 
   LimeLight lm;

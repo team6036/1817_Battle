@@ -8,14 +8,13 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.robot.commands.IndexerCommand;
-import frc.robot.commands.OTBCommand;
-import frc.robot.commands.SwerveCommand;
-import frc.robot.commands.SwerveAutoCommand;
+import frc.robot.commands.*;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.OTBSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import java.util.function.BooleanSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -29,7 +28,7 @@ public class RobotContainer {
   private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem();
   private final OTBSubsystem m_otbSubsystem = new OTBSubsystem();
 
-  private final SwerveAutoCommand m_swerveAutoCommand;
+  private final Auto2 m_swerveAutoCommand;
   private final SwerveCommand m_swerveCommand;
   private final IndexerCommand m_indexerCommand = new IndexerCommand(m_indexerSubsystem);
   private final OTBCommand m_otbCommand = new OTBCommand(m_otbSubsystem);
@@ -47,7 +46,13 @@ public class RobotContainer {
     () -> xc.getAButton());
     LimeLight lm = new LimeLight();
     lm.setPipeline(1);
-    m_swerveAutoCommand = new SwerveAutoCommand(m_swerveDriveSubsystem, m_indexerSubsystem, lm);
+    m_swerveAutoCommand = new Auto2(new BooleanSupplier() {
+      @Override
+      public boolean getAsBoolean() {
+        return false;
+      }
+    }, m_swerveDriveSubsystem, m_otbSubsystem);
+//    m_swerveAutoCommand = new SwerveAutoCommand(m_swerveDriveSubsystem, m_indexerSubsystem, lm);
   }
 
   /**

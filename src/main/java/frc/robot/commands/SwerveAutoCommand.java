@@ -19,7 +19,7 @@ public class SwerveAutoCommand extends CommandBase {
     /**
      * Creates a new ExampleCommand.
      *
-     * @param subsystem The subsystem used by this command.
+//     * @param subsystem The subsystem used by this command.
      */
     public SwerveAutoCommand(SwerveDriveSubsystem swerve, IndexerSubsystem idSub, LimeLight limelight) {
         m_swerveSubsystem = swerve;
@@ -53,8 +53,8 @@ public class SwerveAutoCommand extends CommandBase {
             driveTranslation = new Pose2D(0, 0, driveRotation);
         }
         // m_swerveSubsystem.drive(driveTranslation, true);
-        m_indexerSubsystem.setHood();
-        m_indexerSubsystem.start(0.75);
+//        m_indexerSubsystem.setHood();
+        m_indexerSubsystem.start();
 
         // while(true){
 
