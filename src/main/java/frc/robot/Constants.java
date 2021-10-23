@@ -165,7 +165,7 @@ public class Constants {
             public static final int D = 8;
             public static final int T = 7;
             public final static int E = 12;
-            public final static double offset = 0.878971 + Math.PI;
+            public final static double offset = 0.878971 + Math.PI*2 - Math.PI;
         }
     }
 

@@ -12,7 +12,14 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.InterpolatedTreeMap;
+import frc.robot.LimeLight;
+import frc.robot.ControlLime.LedMode;
 
 public class IndexerSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -23,6 +30,8 @@ public class IndexerSubsystem extends SubsystemBase {
   static Servo pushUp;
   static Spark hood2;
   static Spark hood1;
+  static CANSparkMax turret;
+  
 
   static boolean up = true;
 
@@ -30,6 +39,11 @@ public class IndexerSubsystem extends SubsystemBase {
   static final double scalef = 1;
 
   static Joystick joystick;
+  static XboxController xb = new XboxController(4);
+
+  static LimeLight lm;
+
+  static InterpolatedTreeMap itm = new InterpolatedTreeMap();
 
 
   public IndexerSubsystem() {
@@ -41,21 +55,42 @@ public class IndexerSubsystem extends SubsystemBase {
     pushUp = new Servo(2);
     hood1 = new Spark(0);
     hood2 = new Spark(1);
+    turret = new CANSparkMax(22, MotorType.kBrushless);
+    shooterLeft.setOpenLoopRampRate(1);
+    shooterRight.setOpenLoopRampRate(1);
+
+    lm = new LimeLight();
+    lm.setPipeline(1);
+
+    double offset = 0.00;
+
+    itm.put(3.0, 0.625 + offset);
+    itm.put(3.5, 0.656 + offset);
+    itm.put(4.0, 0.695 + offset);
+    itm.put(4.5, 0.77 + offset);
+ 
   }
 
 
   public void start(){
-    shooterRight.set(-scalef*Math.abs(joystick.getRawAxis(3)));
-    shooterLeft.set(scalef*Math.abs(joystick.getRawAxis(3)));
-    balltube.set(ControlMode.PercentOutput, 0.7);
+    // shooterRight.set(-scalef*Math.abs(joystick.getRawAxis(3)));
+    // shooterLeft.set(scalef*Math.abs(joystick.getRawAxis(3)));
+    shooterRight.set(-itm.getInterpolated(lm.estimateDis()));
+    shooterLeft.set(itm.getInterpolated(lm.estimateDis()));
+    
+    SmartDashboard.putNumber("s", scalef*Math.abs(joystick.getRawAxis(3)));
+    SmartDashboard.putNumber("draw", shooterLeft.getBusVoltage());
+    balltube.set(ControlMode.PercentOutput, 0.95);
     System.out.println(balltube.getMotorOutputPercent());
   }
 
   public void start(double power){
     shooterRight.set(-scalef*power);
     shooterLeft.set(scalef*power);
-    indexer.set(-0.05);
-    balltube.set(ControlMode.PercentOutput, 0.7);
+    SmartDashboard.putNumber("s", scalef*power);
+    SmartDashboard.putNumber("draw", shooterLeft.getAppliedOutput());
+    indexer.set(-0.03);
+    balltube.set(ControlMode.PercentOutput, 0.95);
   }
 
   public void unjam(){
@@ -78,10 +113,9 @@ public class IndexerSubsystem extends SubsystemBase {
     // System.out.println(hood1.getPosition());
 
     // This method will be called once per scheduler run
-    if(joystick.getTrigger()){
+    if(joystick.getTrigger() || xb.getTriggerAxis(Hand.kRight)>0.05){
       start();
-    }
-    else {
+    }else {
       stop();
       shooterRight.set(-0.2);
       shooterLeft.set(0.2);
@@ -107,13 +141,43 @@ public class IndexerSubsystem extends SubsystemBase {
     }
 
     // revolver
-    if (joystick.getRawButton(2)) {
-      indexer.set(-0.05);
+    if (joystick.getRawButton(2) || xb.getBButton()) {
+      indexer.set(-0.08);
       // indexer.set(0.05);
     }
-    else
-      indexer.set(0);
+    else if (joystick.getRawButton(3) || xb.getYButton()) {
+      indexer.set(0.08);
+      // indexer.set(0.05);
+    }
+    else indexer.set(0);
+      
+    
+    turret.set(xb.getY(Hand.kRight)/10000000);
+    if(xb.getXButton()){
+      lm.setLEDMode(LedMode.kforceOn);
+      if(lm.getIsTargetFound()){
+      
+        double val = lm.getdegRotationToTarget()/19;
+        if(val < 0.02){
+          val = Math.min(Math.max(val, -0.18), -0.015);
+        }else if(val > 0.02){
+          val = Math.max(Math.min(val, 0.18), 0.015);
+        }
+        turret.set(val);
+      }
+    }else{
+      lm.setLEDMode(LedMode.kforceOff);
+    }
 
+    // if(shooterLeft.getAppliedOutput() > 10.2){
+      // xb.setRumble(RumbleType.kRightRumble, 0.6);
+    // }else{
+      // xb.setRumble(RumbleType.kRightRumble, 0);
+    // }
+
+    // SmartDashboard.putNumber("some dogshit", turret.get());
+
+    
     // push up thing
     // System.out.println(pushUp.getPosition());
     // if (joystick.getRawButton(12))

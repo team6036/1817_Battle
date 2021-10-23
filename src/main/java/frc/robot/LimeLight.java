@@ -319,4 +319,12 @@ public class LimeLight {
         double y = cyRaw.getDouble(0.0);
         return y;
     }
+
+    public double estimateDis(){
+        double cot = cotan(LimelightConstants.cameraAngleDegrees + getdegVerticalToTarget());
+        return cot * (LimelightConstants.goalHeightMeters - LimelightConstants.cameraHeighMeters);
+    }
+    public double cotan(double aDegrees){
+        return Math.cos(Math.toRadians(aDegrees))/Math.sin(Math.toRadians(aDegrees));
+    }
 }

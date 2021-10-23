@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.ControlLime.LedMode;
@@ -75,6 +76,8 @@ public class Robot extends TimedRobot {
     System.out.println(((SwerveAutoCommand)(m_autonomousCommands[0])).getLimeLight().getdegRotationToTarget());
   }
 
+  LimeLight lm;
+
   @Override
   public void teleopInit() {
       CommandScheduler.getInstance().cancelAll();
@@ -82,6 +85,8 @@ public class Robot extends TimedRobot {
       for (Command c : m_teleopCommands) {
           c.schedule(); 
       }
+      lm = new LimeLight();
+    lm.setPipeline(1);
 
       // ((SwerveAutoCommand)(m_autonomousCommands[0])).getLimeLight().setLEDMode(LedMode.kforceOn);
 
@@ -89,6 +94,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    SmartDashboard.putNumber("d", lm.estimateDis());
   }
 
   @Override

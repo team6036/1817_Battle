@@ -7,11 +7,14 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class OTBSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   static Joystick joystick = new Joystick(0);
+  static XboxController xc = new XboxController(4);
   static CANSparkMax in;
   static int stuckCurrent = 1; //placeholder
 
@@ -21,12 +24,21 @@ public class OTBSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(joystick.getRawButton(5)){
+    // if(joystick.getRawButton(5)){
+    //   startIn();
+    // }else{
+    //   stopIn();
+    // }
+    // if(joystick.getRawButton(6)){
+    //   reverse();
+    // }
+
+    if(xc.getBumper(Hand.kRight)){
       startIn();
     }else{
       stopIn();
     }
-    if(joystick.getRawButton(6)){
+    if(xc.getBumper(Hand.kLeft)){
       reverse();
     }
 
@@ -35,7 +47,7 @@ public class OTBSubsystem extends SubsystemBase {
   }
 
   public static void startIn(){
-    in.set(-0.35);
+    in.set(-0.3);
   }
 
   public static void stopIn(){
@@ -43,7 +55,7 @@ public class OTBSubsystem extends SubsystemBase {
   }
 
   public static void reverse(){
-    in.set(0.4);
+    in.set(0.3);
   }
 
   public static boolean isStuck(){

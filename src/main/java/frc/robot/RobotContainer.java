@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.OTBCommand;
 import frc.robot.commands.SwerveCommand;
@@ -38,8 +39,12 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     Joystick j = new Joystick(0);
-    m_swerveCommand = new SwerveCommand(m_swerveDriveSubsystem, () -> j.getX(), () -> j.getY(), () -> j.getZ(),
-    () -> j.getRawButton(7));
+    XboxController xc = new XboxController(4);
+    // m_swerveCommand = new SwerveCommand(m_swerveDriveSubsystem, () -> j.getX(), () -> j.getY(), () -> j.getZ(),
+    // () -> j.getRawButton(7));
+
+    m_swerveCommand = new SwerveCommand(m_swerveDriveSubsystem, () -> xc.getX(Hand.kLeft), () -> xc.getY(Hand.kLeft), () -> xc.getX(Hand.kRight),
+    () -> xc.getAButton());
     LimeLight lm = new LimeLight();
     lm.setPipeline(1);
     m_swerveAutoCommand = new SwerveAutoCommand(m_swerveDriveSubsystem, m_indexerSubsystem, lm);

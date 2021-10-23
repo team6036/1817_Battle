@@ -54,6 +54,10 @@ public class Polynomial {
         eq.add(term);
     }
 
+    public void addMatrixTerm(Double coefficient) {
+        addTermForced(new Double[] {coefficient, 0.0});
+    }
+
     public Polynomial add(Polynomial p) {
         Polynomial n = new Polynomial();
 
