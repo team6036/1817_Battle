@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.math.Pose2D;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.OTBSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.Constants.Debug;
@@ -27,6 +28,7 @@ public class Auto2 extends CommandBase {
     private SwerveDriveSubsystem swerve;
     private HolonomicDriveController m_controller;
     private OTBSubsystem otb;
+    private IndexerSubsystem ind;
     private Trajectory trajectory;
     private Pose2d initialPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     private BooleanSupplier odoRecalibrate;
@@ -38,28 +40,34 @@ public class Auto2 extends CommandBase {
      * @param swerve         Swerve Subsystem
      */
 
-    public Auto2(BooleanSupplier odoRecalibrate, SwerveDriveSubsystem swerve, OTBSubsystem otb) {
+    public Auto2(BooleanSupplier odoRecalibrate, SwerveDriveSubsystem swerve, OTBSubsystem otb, IndexerSubsystem ind) {
         this.odoRecalibrate = odoRecalibrate;
 
         // ! For anyone else who reads this: I know these are concerningly high. It
         // ! works, so do not remove without testing. Signed, Ben K.
         m_controller = new HolonomicDriveController(new PIDController(.8, 0.16, 0.08),
                 new PIDController(.8, 0.16, 0.08),
-                new ProfiledPIDController(.2, 0, 0, new TrapezoidProfile.Constraints(3 * Math.PI, Math.PI)));
+                new ProfiledPIDController(.3, 0.05, 0.06, new TrapezoidProfile.Constraints(3 * Math.PI, Math.PI)));
 
         this.swerve = swerve;
         this.otb = otb;
+        this.ind = ind;
 
         trajectoryConfig = new TrajectoryConfig(1, 1);
 
         trajectory = TrajectoryGenerator.generateTrajectory(
                 Arrays.asList(
                         new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-                        new Pose2d(1.2, 0, Rotation2d.fromDegrees(0)),
-                        new Pose2d(-0.3, -2, Rotation2d.fromDegrees(0))
+                        new Pose2d(0.3, -0.20, Rotation2d.fromDegrees(0)),
+
+                        new Pose2d(3.5, -0.20, Rotation2d.fromDegrees(0)),
+//                        new Pose2d(0.3, -0.12, Rotation2d.fromDegrees(0)),
+                        new Pose2d(0.6, -1.5, Rotation2d.fromDegrees(0))
+//                        new Pose2d(-0.3, -2, Rotation2d.fromDegrees(180))
                         ),
                 trajectoryConfig
         );
+        ind.finding = false;
 
     }
 
@@ -79,16 +87,30 @@ public class Auto2 extends CommandBase {
         double curTime = timer.get();
         Trajectory.State desiredState = trajectory.sample(curTime);
 
+
         ChassisSpeeds targetChassisSpeeds = m_controller.calculate(
                 initialPose.plus(new Transform2d(new Pose2d(), swerve.getController().odo.getCurrentPose().toPose2d())),
-                desiredState, new Rotation2d());
+                desiredState, Rotation2d.fromDegrees(0));
         if (Debug.odometryDebug) {
             System.out.println("desiredState: " + new Pose2D(desiredState.poseMeters.getX() - initialPose.getX(),
                     desiredState.poseMeters.getY() - initialPose.getY(), 0));
             System.out.println("currentState: " + swerve.getController().odo.getCurrentPose());
         }
+        System.out.println("Turn: " + swerve.getController().odo.robotPose.ang);
         swerve.drive(new Pose2D(targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond,
                 targetChassisSpeeds.omegaRadiansPerSecond), false);
+
+        System.out.println(trajectory.getStates().get(trajectory.getStates().size() - 1).timeSeconds);
+
+        if(timer.get() > 9.5){
+            ind.start();
+            ind.finding = true;
+        }
+
+        if(timer.get() > 13){
+            ind.finding =false;
+            ind.revole();
+        }
 
     }
 

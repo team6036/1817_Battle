@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.Constants.Debug;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.SwerveConstants.FL;
@@ -44,6 +45,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                         "frontLeft"),
                 new Module(BL.T, BL.D, BL.E, new Pose2D(+offsetX, -offsetY, Util.normalizeAngle(BL.offset, Math.PI)),
                         "backLeft"));
+        SmartDashboard.putNumber("FLo", SwerveConstants.FLo);
+        SmartDashboard.putNumber("FRo", SwerveConstants.FRo);
+        SmartDashboard.putNumber("BLo", SwerveConstants.BLo);
+        SmartDashboard.putNumber("BRo", SwerveConstants.BRo);
     }
 
     @Override
@@ -53,6 +58,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         double z = joystick.getRawAxis(3);
 
         double speed = Math.sqrt(x*x + y*y);
+
+
+        SwerveConstants.FLo = SmartDashboard.getNumber("FLo", 0);
+        SwerveConstants.FRo = SmartDashboard.getNumber("FRo", 0);
+        SwerveConstants.BLo = SmartDashboard.getNumber("BLo", 0);
+        SwerveConstants.BRo = SmartDashboard.getNumber("BRo", 0);
         
 
         swerve.nyoom(robotSpeed, fieldRelative);

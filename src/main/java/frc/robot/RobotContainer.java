@@ -51,7 +51,7 @@ public class RobotContainer {
       public boolean getAsBoolean() {
         return false;
       }
-    }, m_swerveDriveSubsystem, m_otbSubsystem);
+    }, m_swerveDriveSubsystem, m_otbSubsystem, m_indexerSubsystem);
 //    m_swerveAutoCommand = new SwerveAutoCommand(m_swerveDriveSubsystem, m_indexerSubsystem, lm);
   }
 

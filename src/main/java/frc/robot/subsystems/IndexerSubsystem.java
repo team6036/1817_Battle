@@ -108,6 +108,8 @@ public class IndexerSubsystem extends SubsystemBase {
     hood2.setPosition(0.02);
   }
 
+  public boolean finding = true;
+
   @Override
   public void periodic() {
     // System.out.println(hood1.getPosition());
@@ -142,32 +144,20 @@ public class IndexerSubsystem extends SubsystemBase {
 
     // revolver
     if (joystick.getRawButton(2) || xb.getBButton()) {
-      indexer.set(-0.08);
-      // indexer.set(0.05);
+      revole();
     }
     else if (joystick.getRawButton(3) || xb.getYButton()) {
       indexer.set(0.08);
-      // indexer.set(0.05);
     }
     else indexer.set(0);
       
     
     turret.set(xb.getY(Hand.kRight)/10000000);
-    if(xb.getXButton()){
-      lm.setLEDMode(LedMode.kforceOn);
-      if(lm.getIsTargetFound()){
-      
-        double val = lm.getdegRotationToTarget()/19;
-        if(val < 0.02){
-          val = Math.min(Math.max(val, -0.18), -0.015);
-        }else if(val > 0.02){
-          val = Math.max(Math.min(val, 0.18), 0.015);
-        }
-        turret.set(val);
-      }
-    }else{
-      lm.setLEDMode(LedMode.kforceOff);
+    if(xb.getXButtonPressed()) {
+      finding = !finding;
     }
+    SmartDashboard.putBoolean("finding", finding);
+    thing();
 
     // if(shooterLeft.getAppliedOutput() > 10.2){
       // xb.setRumble(RumbleType.kRightRumble, 0.6);
@@ -191,5 +181,26 @@ public class IndexerSubsystem extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+  public void revole(){
+    indexer.set(-0.08);
+  }
+
+  public void thing(){
+    if(finding){
+      lm.setLEDMode(LedMode.kforceOn);
+      if(lm.getIsTargetFound()){
+
+        double val = lm.getdegRotationToTarget()/27;
+        if(val < 0.02){
+          val = Math.min(Math.max(val, -0.18), -0.01);
+        }else if(val > 0.02){
+          val = Math.max(Math.min(val, 0.18), 0.01);
+        }
+        turret.set(val);
+      }
+    }else{
+      lm.setLEDMode(LedMode.kforceOff);
+    }
   }
 }
